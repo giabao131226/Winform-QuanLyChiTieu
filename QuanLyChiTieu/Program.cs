@@ -16,7 +16,7 @@ namespace QuanLyChiTieu
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new FormQuanLyChiTieu());
+            Application.Run(new DangNhap());
         }
     }
 }

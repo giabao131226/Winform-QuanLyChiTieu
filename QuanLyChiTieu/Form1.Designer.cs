@@ -30,6 +30,14 @@
         {
             this.components = new System.ComponentModel.Container();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.btnBieuDo = new System.Windows.Forms.Button();
+            this.btnSoChiTieu = new System.Windows.Forms.Button();
+            this.btnViTien = new System.Windows.Forms.Button();
+            this.btnCaiDat = new System.Windows.Forms.Button();
+            this.btnNguoiDung = new System.Windows.Forms.Button();
+            this.panel4 = new System.Windows.Forms.Panel();
+            this.panel5 = new System.Windows.Forms.Panel();
             this.label2 = new System.Windows.Forms.Label();
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
             this.splitContainer4 = new System.Windows.Forms.SplitContainer();
@@ -54,6 +62,9 @@
             this.lblBoLocVaTimKiem = new System.Windows.Forms.Label();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.grbThemGiaoDich = new System.Windows.Forms.GroupBox();
+            this.txtId = new System.Windows.Forms.TextBox();
+            this.buttonSuaGiaoDich = new System.Windows.Forms.Button();
+            this.btnHuySua = new System.Windows.Forms.Button();
             this.buttonAddTransition = new System.Windows.Forms.Button();
             this.dateTimePickerNgayGiaoDich = new System.Windows.Forms.DateTimePicker();
             this.label10 = new System.Windows.Forms.Label();
@@ -78,8 +89,10 @@
             this.bindingSource1 = new System.Windows.Forms.BindingSource(this.components);
             this.backgroundWorker2 = new System.ComponentModel.BackgroundWorker();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
+            this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
+            this.panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).BeginInit();
             this.splitContainer3.Panel1.SuspendLayout();
             this.splitContainer3.Panel2.SuspendLayout();
@@ -112,6 +125,10 @@
             this.splitContainer1.Location = new System.Drawing.Point(0, 0);
             this.splitContainer1.Name = "splitContainer1";
             // 
+            // splitContainer1.Panel1
+            // 
+            this.splitContainer1.Panel1.Controls.Add(this.panel3);
+            // 
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.label2);
@@ -119,6 +136,92 @@
             this.splitContainer1.Size = new System.Drawing.Size(1214, 619);
             this.splitContainer1.SplitterDistance = 78;
             this.splitContainer1.TabIndex = 0;
+            // 
+            // panel3
+            // 
+            this.panel3.BackColor = System.Drawing.Color.MidnightBlue;
+            this.panel3.Controls.Add(this.btnBieuDo);
+            this.panel3.Controls.Add(this.btnSoChiTieu);
+            this.panel3.Controls.Add(this.btnViTien);
+            this.panel3.Controls.Add(this.btnCaiDat);
+            this.panel3.Controls.Add(this.btnNguoiDung);
+            this.panel3.Controls.Add(this.panel4);
+            this.panel3.Controls.Add(this.panel5);
+            this.panel3.Location = new System.Drawing.Point(-17, 0);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(113, 619);
+            this.panel3.TabIndex = 1;
+            // 
+            // btnBieuDo
+            // 
+            this.btnBieuDo.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnBieuDo.ForeColor = System.Drawing.Color.Red;
+            this.btnBieuDo.Location = new System.Drawing.Point(19, 109);
+            this.btnBieuDo.Name = "btnBieuDo";
+            this.btnBieuDo.Size = new System.Drawing.Size(75, 47);
+            this.btnBieuDo.TabIndex = 7;
+            this.btnBieuDo.Text = "📈";
+            this.btnBieuDo.UseVisualStyleBackColor = true;
+            this.btnBieuDo.Click += new System.EventHandler(this.btnBieuDo_Click);
+            // 
+            // btnSoChiTieu
+            // 
+            this.btnSoChiTieu.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnSoChiTieu.ForeColor = System.Drawing.Color.Fuchsia;
+            this.btnSoChiTieu.Location = new System.Drawing.Point(20, 185);
+            this.btnSoChiTieu.Name = "btnSoChiTieu";
+            this.btnSoChiTieu.Size = new System.Drawing.Size(72, 42);
+            this.btnSoChiTieu.TabIndex = 6;
+            this.btnSoChiTieu.Text = "🗒️";
+            this.btnSoChiTieu.UseVisualStyleBackColor = true;
+            // 
+            // btnViTien
+            // 
+            this.btnViTien.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnViTien.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
+            this.btnViTien.Location = new System.Drawing.Point(20, 246);
+            this.btnViTien.Name = "btnViTien";
+            this.btnViTien.Size = new System.Drawing.Size(75, 47);
+            this.btnViTien.TabIndex = 5;
+            this.btnViTien.Text = "💳";
+            this.btnViTien.UseVisualStyleBackColor = true;
+            // 
+            // btnCaiDat
+            // 
+            this.btnCaiDat.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnCaiDat.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.btnCaiDat.Location = new System.Drawing.Point(19, 547);
+            this.btnCaiDat.Name = "btnCaiDat";
+            this.btnCaiDat.Size = new System.Drawing.Size(75, 47);
+            this.btnCaiDat.TabIndex = 4;
+            this.btnCaiDat.Text = "⚙️";
+            this.btnCaiDat.UseVisualStyleBackColor = true;
+            // 
+            // btnNguoiDung
+            // 
+            this.btnNguoiDung.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnNguoiDung.ForeColor = System.Drawing.Color.Yellow;
+            this.btnNguoiDung.Location = new System.Drawing.Point(19, 42);
+            this.btnNguoiDung.Name = "btnNguoiDung";
+            this.btnNguoiDung.Size = new System.Drawing.Size(75, 47);
+            this.btnNguoiDung.TabIndex = 3;
+            this.btnNguoiDung.Text = "👤";
+            this.btnNguoiDung.UseVisualStyleBackColor = true;
+            this.btnNguoiDung.Click += new System.EventHandler(this.btnNguoiDung_Click);
+            // 
+            // panel4
+            // 
+            this.panel4.Location = new System.Drawing.Point(115, 6);
+            this.panel4.Name = "panel4";
+            this.panel4.Size = new System.Drawing.Size(200, 59);
+            this.panel4.TabIndex = 2;
+            // 
+            // panel5
+            // 
+            this.panel5.Location = new System.Drawing.Point(116, 3);
+            this.panel5.Name = "panel5";
+            this.panel5.Size = new System.Drawing.Size(693, 73);
+            this.panel5.TabIndex = 1;
             // 
             // label2
             // 
@@ -409,6 +512,9 @@
             // grbThemGiaoDich
             // 
             this.grbThemGiaoDich.BackColor = System.Drawing.Color.White;
+            this.grbThemGiaoDich.Controls.Add(this.txtId);
+            this.grbThemGiaoDich.Controls.Add(this.buttonSuaGiaoDich);
+            this.grbThemGiaoDich.Controls.Add(this.btnHuySua);
             this.grbThemGiaoDich.Controls.Add(this.buttonAddTransition);
             this.grbThemGiaoDich.Controls.Add(this.dateTimePickerNgayGiaoDich);
             this.grbThemGiaoDich.Controls.Add(this.label10);
@@ -427,6 +533,41 @@
             this.grbThemGiaoDich.TabIndex = 2;
             this.grbThemGiaoDich.TabStop = false;
             this.grbThemGiaoDich.Text = "Thêm Giao Dịch";
+            // 
+            // txtId
+            // 
+            this.txtId.Location = new System.Drawing.Point(142, 18);
+            this.txtId.Name = "txtId";
+            this.txtId.Size = new System.Drawing.Size(108, 26);
+            this.txtId.TabIndex = 13;
+            this.txtId.Visible = false;
+            // 
+            // buttonSuaGiaoDich
+            // 
+            this.buttonSuaGiaoDich.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
+            this.buttonSuaGiaoDich.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.buttonSuaGiaoDich.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonSuaGiaoDich.ForeColor = System.Drawing.Color.White;
+            this.buttonSuaGiaoDich.Location = new System.Drawing.Point(21, 324);
+            this.buttonSuaGiaoDich.Name = "buttonSuaGiaoDich";
+            this.buttonSuaGiaoDich.Size = new System.Drawing.Size(244, 36);
+            this.buttonSuaGiaoDich.TabIndex = 12;
+            this.buttonSuaGiaoDich.Text = "Sửa Giao Dịch";
+            this.buttonSuaGiaoDich.UseVisualStyleBackColor = false;
+            this.buttonSuaGiaoDich.Visible = false;
+            this.buttonSuaGiaoDich.Click += new System.EventHandler(this.buttonSuaGiaoDich_Click);
+            // 
+            // btnHuySua
+            // 
+            this.btnHuySua.BackColor = System.Drawing.Color.White;
+            this.btnHuySua.Location = new System.Drawing.Point(265, 0);
+            this.btnHuySua.Name = "btnHuySua";
+            this.btnHuySua.Size = new System.Drawing.Size(22, 25);
+            this.btnHuySua.TabIndex = 11;
+            this.btnHuySua.Text = "X";
+            this.btnHuySua.UseVisualStyleBackColor = false;
+            this.btnHuySua.Visible = false;
+            this.btnHuySua.Click += new System.EventHandler(this.btnHuySua_Click);
             // 
             // buttonAddTransition
             // 
@@ -566,9 +707,11 @@
             // thID
             // 
             this.thID.HeaderText = "ID";
+            this.thID.MinimumWidth = 8;
             this.thID.Name = "thID";
             this.thID.ReadOnly = true;
             this.thID.Visible = false;
+            this.thID.Width = 150;
             // 
             // thTen
             // 
@@ -641,10 +784,12 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Quản Lý Chi Tiêu Cá Nhân";
             this.Load += new System.EventHandler(this.FormQuanLyChiTieu_Load);
+            this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             this.splitContainer1.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
+            this.panel3.ResumeLayout(false);
             this.splitContainer3.Panel1.ResumeLayout(false);
             this.splitContainer3.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).EndInit();
@@ -721,6 +866,7 @@
         private System.ComponentModel.BackgroundWorker backgroundWorker2;
         private System.Windows.Forms.DateTimePicker dateTimePickerBoLocNgayGiaoDich;
         private System.Windows.Forms.Button btnResetFilter;
+        private System.Windows.Forms.Button btnHuySua;
         private System.Windows.Forms.DataGridViewTextBoxColumn thID;
         private System.Windows.Forms.DataGridViewTextBoxColumn thTen;
         private System.Windows.Forms.DataGridViewTextBoxColumn thLoaiGiaoDich;
@@ -729,6 +875,16 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn thSoTien;
         private System.Windows.Forms.DataGridViewButtonColumn btnSua;
         private System.Windows.Forms.DataGridViewButtonColumn btnXoa;
+        private System.Windows.Forms.Button buttonSuaGiaoDich;
+        private System.Windows.Forms.TextBox txtId;
+        private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.Button btnBieuDo;
+        private System.Windows.Forms.Button btnSoChiTieu;
+        private System.Windows.Forms.Button btnViTien;
+        private System.Windows.Forms.Button btnCaiDat;
+        private System.Windows.Forms.Button btnNguoiDung;
+        private System.Windows.Forms.Panel panel4;
+        private System.Windows.Forms.Panel panel5;
     }
 }
 

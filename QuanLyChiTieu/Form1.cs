@@ -2,16 +2,19 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using MySql.Data.MySqlClient;
 
 namespace QuanLyChiTieu
 {
     public partial class FormQuanLyChiTieu : Form
     {
+       
         Boolean flagLocNgay = false;
         List<ChiTieu> chiTieu = new List<ChiTieu>{
     new ChiTieu { Id = "1", Title = "Nhận lương tháng 3", Type = "Thu", Category = "Lương", Date = new DateTime(2025, 6, 1).ToString("dd/MM/yyyy"), Amount = "2000000VND" },
@@ -57,6 +60,14 @@ namespace QuanLyChiTieu
             lblSoDu.Text = "Số Dư: " + (tongThu - tongChi).ToString("N0") + " VND";
         }
 
+        void resetForm()
+        {
+            txtName.Text = "";
+            txtSoTien.Text = "";
+            comboBoxLoaiGiaoDich.SelectedIndex = -1;
+            dateTimePickerNgayGiaoDich.Value = DateTime.Now;
+        }
+
         private void FormQuanLyChiTieu_Load(object sender, EventArgs e)
         {
             foreach (var item in chiTieu)
@@ -76,7 +87,6 @@ namespace QuanLyChiTieu
                 dataShow.Add(item);
             }
         }
-        
         private void btnExit_Click(object sender, EventArgs e)
         {
             Close();
@@ -106,11 +116,8 @@ namespace QuanLyChiTieu
                 return;
             }
         }
-
         private void dataGridView1_CellContentClick_4(object sender, DataGridViewCellEventArgs e)
         {
-            MessageBox.Show(e.ColumnIndex.ToString());
-            Console.WriteLine(dataGridView1.Columns["btnSua"]);
             if(e.ColumnIndex == dataGridView1.Columns["btnXoa"].Index)
             {
                 DialogResult check = MessageBox.Show("Bạn có chắc xoá dòng này không\nNếu xoá dữ liệu không thể khôi phục", "Thông báo", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
@@ -132,9 +139,22 @@ namespace QuanLyChiTieu
 
                 // Lấy giá trị từng cột
                 
-                var name = dataGridView1.Rows[rowIndex].Cells["thTen"].Value;
+                var id = dataGridView1.Rows[rowIndex].Cells["thId"].Value;
+                var title = dataGridView1.Rows[rowIndex].Cells["thTen"].Value;
+                var type = dataGridView1.Rows[rowIndex].Cells["thLoaiGiaoDich"].Value;
+                var category = dataGridView1.Rows[rowIndex].Cells["thDanhMuc"].Value;
+                var date = dataGridView1.Rows[rowIndex].Cells["thNgayGiaoDich"].Value;
+                var amount = dataGridView1.Rows[rowIndex].Cells["thSoTien"].Value;
 
-                MessageBox.Show($"Sửa dòng có Name = {name}");
+                grbThemGiaoDich.Text = "Sửa Giao Dịch";
+                btnHuySua.Visible = true;
+                txtName.Text = title.ToString();
+                txtSoTien.Text = amount.ToString();
+                txtId.Text = id.ToString();
+                comboBoxLoaiGiaoDich.SelectedItem = type.ToString();
+                dateTimePickerBoLocNgayGiaoDich.Value = DateTime.ParseExact(date.ToString(), "dd/MM/yyyy", null);
+
+                buttonSuaGiaoDich.Visible = true;
             }
         }
 
@@ -147,7 +167,7 @@ namespace QuanLyChiTieu
         {
             if(comboBoxBoLocLoai.SelectedItem != null && (comboBoxBoLocLoai.SelectedItem.ToString() == "Tất Cả" || comboBoxBoLocLoai.SelectedItem.ToString() == ""))
             {
-                return chiTieu;
+                return data;
             }
             List<ChiTieu> dataLoc = new List<ChiTieu>();
             foreach (var item in data)
@@ -165,8 +185,10 @@ namespace QuanLyChiTieu
         {
             List<ChiTieu> dataLoc = new List<ChiTieu>();
             string dateLoc = dateTimePickerBoLocNgayGiaoDich.Value.ToString("dd/MM/yyyy");
+
             foreach (var item in data)
             {
+                
                 if (item.Date == dateLoc)
                 {
                     dataLoc.Add(item);
@@ -200,6 +222,10 @@ namespace QuanLyChiTieu
             }
 
             dataShowNew = boLocLoaiGiaoDich(dataShowNew);
+            foreach(var item in dataShowNew)
+            {
+                Console.WriteLine(item.Title);
+            }
 
             dataShowNew = timKiemTheoTen(dataShowNew);
 
@@ -224,10 +250,59 @@ namespace QuanLyChiTieu
         {
             flagLocNgay = false;
             comboBoxBoLocLoai.SelectedIndex = 0;
-            comboBoxBoLocDanhMuc.SelectedIndex = 0;
+            //comboBoxBoLocDanhMuc.SelectedIndex = -1;
+            dateTimePickerBoLocNgayGiaoDich.Value = DateTime.Now;
+            txtTimKiem.Text = "";
+            copyData(chiTieu);
+            loadTableQuanLy(chiTieu);
+        }
+
+        private void buttonSuaGiaoDich_Click(object sender, EventArgs e)
+        {
+            string id = txtId.Text;
+            var chiTieuSua = chiTieu.FirstOrDefault(item => item.Id == id);
+            if(chiTieuSua != null)
+            {
+                chiTieuSua.Title = txtName.Text;
+                chiTieuSua.Type = comboBoxLoaiGiaoDich.SelectedItem.ToString();
+                chiTieuSua.Date = dateTimePickerNgayGiaoDich.Value.ToString("dd/MM/yyyy");
+                chiTieuSua.Amount = txtSoTien.Text + "VND";
+                copyData(chiTieu);
+                loadTableQuanLy(dataShow);
+                loadThongKeSoDu();
+                grbThemGiaoDich.Text = "Thêm Giao Dịch";
+                btnHuySua.Visible = false;
+                buttonSuaGiaoDich.Visible = false;
+                resetForm();
+            }
+        }
+
+        private void btnHuySua_Click(object sender, EventArgs e)
+        {
+            copyData(chiTieu);
+            loadTableQuanLy(dataShow);
+            loadThongKeSoDu();
+            grbThemGiaoDich.Text = "Thêm Giao Dịch";
+            btnHuySua.Visible = false;
+            buttonSuaGiaoDich.Visible = false;
+            resetForm();
+        }
+
+        
+        private void btnBieuDo_Click(object sender, EventArgs e)
+        {
+            ThongTinNguoiDung thongTinNguoiDung = new ThongTinNguoiDung();
+            thongTinNguoiDung.Show();
+            this.Hide();
+        }
+
+        private void btnNguoiDung_Click(object sender, EventArgs e)
+        {
+            ThongTinNguoiDung thongTinNguoiDung = new ThongTinNguoiDung();
+            thongTinNguoiDung.Show();
+            this.Hide();
         }
     }
-
 
     class ChiTieu
     {
@@ -242,7 +317,6 @@ namespace QuanLyChiTieu
         {
 
         }
-
         public ChiTieu(string Id, string title, string type, string category, string date, string amount)
         {
             this.Id = Id;
