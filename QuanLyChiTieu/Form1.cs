@@ -291,9 +291,9 @@ namespace QuanLyChiTieu
         
         private void btnBieuDo_Click(object sender, EventArgs e)
         {
-            ThongTinNguoiDung thongTinNguoiDung = new ThongTinNguoiDung();
-            thongTinNguoiDung.Show();
+            BangDuKien bangDuKien = new BangDuKien();
             this.Hide();
+            bangDuKien.Show();
         }
 
         private void btnNguoiDung_Click(object sender, EventArgs e)
