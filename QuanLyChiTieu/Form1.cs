@@ -9,9 +9,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using MySql.Data.MySqlClient;
+using ShareddData;
 
 namespace QuanLyChiTieu
 {
+
     public partial class FormQuanLyChiTieu : Form
     {
        
@@ -24,8 +26,10 @@ namespace QuanLyChiTieu
     new ChiTieu { Id = "5", Title = "Cà phê", Type = "Chi", Category = "Ăn uống", Date = new DateTime(2025, 6, 6).ToString("dd/MM/yyyy"), Amount = "40000VND" }
 };
         List<ChiTieu> dataShow = new List<ChiTieu>();
+        List<ShareddData.DanhMuc> danhMucs = new List<ShareddData.DanhMuc>();
+        CategoryService categoryService = new CategoryService();
+        TransitionService transitionService = new TransitionService();
 
-        
         public FormQuanLyChiTieu()
         {
             InitializeComponent();
@@ -34,12 +38,25 @@ namespace QuanLyChiTieu
         void loadTableQuanLy(List<ChiTieu> data)
         {
             dataGridView1.Rows.Clear();
-            foreach (var item in data)
+            string thang = dateTimePickerNgayGiaoDich.Value.Month.ToString();
+            string nam = dateTimePickerNgayGiaoDich.Value.Year.ToString();
+            try
             {
-                dataGridView1.Rows.Add(item.Id,item.Title, item.Type, item.Category, item.Date, item.Amount);
+                List<ShareddData.Transition> transitions = transitionService.loadTransition(thang, nam, "", "");
+
+                Console.WriteLine("Count = " + transitions.Count);
+                foreach (var item in transitions)
+                    {
+                    
+                        dataGridView1.Rows.Add(item.Id, item.TenGiaoDich, item.Loai, item.TenDanhMuc, item.NgayTao.ToString("dd/MM/yyyy"), item.SoTien.ToString("N0") + "VND");
+                    }
+                
+            }
+            catch (Exception error)
+            {
+                MessageBox.Show("Lỗi khi tải giao dịch: " + error.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
         void loadThongKeSoDu()
         {
             long tongThu = 0;
@@ -76,7 +93,7 @@ namespace QuanLyChiTieu
             }
 
             loadTableQuanLy(dataShow);
-            loadThongKeSoDu();
+            //loadThongKeSoDu();
         }
 
         void copyData(List<ChiTieu> data)
@@ -94,7 +111,7 @@ namespace QuanLyChiTieu
 
         private void buttonAddTransition_Click(object sender, EventArgs e)
         {
-            
+
             if (txtName.Text.Length == 0 || txtSoTien.Text.Length == 0 || comboBoxLoaiGiaoDich.SelectedIndex == -1)
             {
                 MessageBox.Show("Vui lòng điền đầy đủ thông tin giao dịch!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -102,20 +119,45 @@ namespace QuanLyChiTieu
             }
             try
             {
-                long soTien = int.Parse(txtSoTien.Text);
-                
-                ChiTieu newChiTieu = new ChiTieu(DateTime.Now.ToString("HHmmss"),txtName.Text, comboBoxLoaiGiaoDich.SelectedItem.ToString(), "Test", dateTimePickerNgayGiaoDich.Value.ToString("dd/MM/yyyy"), soTien.ToString() + "VND");
-                chiTieu.Add(newChiTieu);
-                copyData(chiTieu);
-                loadTableQuanLy(dataShow);
-                loadThongKeSoDu();
+                string tenGiaoDich = txtName.Text;
+                string loai = comboBoxLoaiGiaoDich.SelectedItem.ToString();
+                string ngayTao = dateTimePickerNgayGiaoDich.Value.ToString("dd/MM/yyyy");
+                string danhMuc = comboBoxDanhMuc.SelectedItem != null ? comboBoxDanhMuc.SelectedItem.ToString() : "";
+                decimal soTien = decimal.Parse(txtSoTien.Text);
+
+                try
+                {
+                    bool ok = transitionService.addTransition(tenGiaoDich, loai, soTien, ngayTao, danhMuc);
+                    if (ok)
+                    {
+                        MessageBox.Show("Thêm giao dịch thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        ChiTieu newTransition = new ChiTieu((chiTieu.Count + 1).ToString(), tenGiaoDich, loai, danhMuc, ngayTao, soTien.ToString("N0") + "VND");
+                        //chiTieu.Add(newTransition);
+                        //copyData(chiTieu);
+                        //loadTableQuanLy(dataShow);
+                        //loadThongKeSoDu();
+                        //resetForm();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Thêm giao dịch thất bại!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+                catch (Exception error)
+                {
+                    MessageBox.Show("Lỗi khi thêm giao dịch: " + error.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            catch (FormatException)
+            {
+                MessageBox.Show("Số tiền phải là một số hợp lệ!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             catch (Exception error)
             {
-                MessageBox.Show("Số tiền phải là số không được chứa ký tự chữ cái hoặc in hoa", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+                MessageBox.Show("Lỗi không xác định: " + error.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
         private void dataGridView1_CellContentClick_4(object sender, DataGridViewCellEventArgs e)
         {
             if(e.ColumnIndex == dataGridView1.Columns["btnXoa"].Index)
@@ -302,6 +344,34 @@ namespace QuanLyChiTieu
             thongTinNguoiDung.Show();
             this.Hide();
         }
+
+        void loadDanhMuc()
+        {
+            string thang = dateTimePickerNgayGiaoDich.Value.Month.ToString();
+            string nam = dateTimePickerNgayGiaoDich.Value.Year.ToString();
+            string selectedType = comboBoxLoaiGiaoDich.SelectedItem.ToString();
+            try
+            {
+                danhMucs = categoryService.hienThiDanhMuc(selectedType, thang, nam);
+                comboBoxDanhMuc.Items.Clear();
+                foreach (var item in danhMucs)
+                {
+                    comboBoxDanhMuc.Items.Add(item.TenDanhMuc);
+                }
+            }catch(Exception error)
+            {
+                MessageBox.Show("Lỗi khi tải danh mục: " + error.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+        }
+
+        private void comboBoxLoaiGiaoDich_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            
+            loadDanhMuc();
+        }
+
+        
     }
 
     class ChiTieu

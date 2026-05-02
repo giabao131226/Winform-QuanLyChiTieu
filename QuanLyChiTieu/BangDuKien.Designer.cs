@@ -69,14 +69,16 @@
             this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader7 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.label4 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
+            this.columnHeaderID = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.lblChenhLech = new System.Windows.Forms.Label();
+            this.lblTongThucChi = new System.Windows.Forms.Label();
+            this.lblTongDuKien = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.lblTieuDeBangDuKien = new System.Windows.Forms.Label();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.columnHeaderID = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeaderLoai = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeaderNgayTao = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -420,6 +422,7 @@
             this.Sua.TabIndex = 6;
             this.Sua.Text = "Sửa";
             this.Sua.UseVisualStyleBackColor = false;
+            this.Sua.Click += new System.EventHandler(this.Sua_Click);
             // 
             // Xoa
             // 
@@ -489,9 +492,9 @@
             // splitContainer3.Panel1
             // 
             this.splitContainer3.Panel1.Controls.Add(this.BangTongHop);
-            this.splitContainer3.Panel1.Controls.Add(this.label4);
-            this.splitContainer3.Panel1.Controls.Add(this.label5);
-            this.splitContainer3.Panel1.Controls.Add(this.label2);
+            this.splitContainer3.Panel1.Controls.Add(this.lblChenhLech);
+            this.splitContainer3.Panel1.Controls.Add(this.lblTongThucChi);
+            this.splitContainer3.Panel1.Controls.Add(this.lblTongDuKien);
             this.splitContainer3.Panel1.Controls.Add(this.label9);
             this.splitContainer3.Panel1.Controls.Add(this.lblTieuDeBangDuKien);
             // 
@@ -510,7 +513,9 @@
             this.columnHeader6,
             this.columnHeader7,
             this.columnHeader8,
-            this.columnHeaderID});
+            this.columnHeaderID,
+            this.columnHeaderLoai,
+            this.columnHeaderNgayTao});
             this.BangTongHop.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.BangTongHop.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.BangTongHop.FullRowSelect = true;
@@ -542,42 +547,47 @@
             this.columnHeader8.Text = "Chênh lệch";
             this.columnHeader8.Width = 126;
             // 
-            // label4
+            // columnHeaderID
             // 
-            this.label4.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.label4.Font = new System.Drawing.Font("Arial", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.ForeColor = System.Drawing.Color.ForestGreen;
-            this.label4.Location = new System.Drawing.Point(469, 572);
-            this.label4.Margin = new System.Windows.Forms.Padding(0);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(126, 22);
-            this.label4.TabIndex = 35;
-            this.label4.Text = "200000";
-            this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.columnHeaderID.Text = "ID";
+            this.columnHeaderID.Width = 0;
             // 
-            // label5
+            // lblChenhLech
             // 
-            this.label5.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.label5.Font = new System.Drawing.Font("Arial", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(343, 572);
-            this.label5.Margin = new System.Windows.Forms.Padding(0);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(126, 22);
-            this.label5.TabIndex = 34;
-            this.label5.Text = " 4800000";
-            this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblChenhLech.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.lblChenhLech.Font = new System.Drawing.Font("Arial", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblChenhLech.ForeColor = System.Drawing.Color.ForestGreen;
+            this.lblChenhLech.Location = new System.Drawing.Point(469, 572);
+            this.lblChenhLech.Margin = new System.Windows.Forms.Padding(0);
+            this.lblChenhLech.Name = "lblChenhLech";
+            this.lblChenhLech.Size = new System.Drawing.Size(126, 22);
+            this.lblChenhLech.TabIndex = 35;
+            this.lblChenhLech.Text = "0";
+            this.lblChenhLech.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // label2
+            // lblTongThucChi
             // 
-            this.label2.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.label2.Font = new System.Drawing.Font("Arial", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(217, 572);
-            this.label2.Margin = new System.Windows.Forms.Padding(0);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(126, 22);
-            this.label2.TabIndex = 33;
-            this.label2.Text = " 5000000";
-            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblTongThucChi.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.lblTongThucChi.Font = new System.Drawing.Font("Arial", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTongThucChi.Location = new System.Drawing.Point(343, 572);
+            this.lblTongThucChi.Margin = new System.Windows.Forms.Padding(0);
+            this.lblTongThucChi.Name = "lblTongThucChi";
+            this.lblTongThucChi.Size = new System.Drawing.Size(126, 22);
+            this.lblTongThucChi.TabIndex = 34;
+            this.lblTongThucChi.Text = "0";
+            this.lblTongThucChi.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lblTongDuKien
+            // 
+            this.lblTongDuKien.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.lblTongDuKien.Font = new System.Drawing.Font("Arial", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTongDuKien.Location = new System.Drawing.Point(217, 572);
+            this.lblTongDuKien.Margin = new System.Windows.Forms.Padding(0);
+            this.lblTongDuKien.Name = "lblTongDuKien";
+            this.lblTongDuKien.Size = new System.Drawing.Size(126, 22);
+            this.lblTongDuKien.TabIndex = 33;
+            this.lblTongDuKien.Text = "0";
+            this.lblTongDuKien.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // label9
             // 
@@ -623,10 +633,13 @@
             this.label6.Text = "Ghi chú: ";
             this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // columnHeaderID
+            // columnHeaderLoai
             // 
-            this.columnHeaderID.Text = "ID";
-            this.columnHeaderID.Width = 0;
+            this.columnHeaderLoai.Width = 0;
+            // 
+            // columnHeaderNgayTao
+            // 
+            this.columnHeaderNgayTao.Width = 0;
             // 
             // BangDuKien
             // 
@@ -694,9 +707,9 @@
         private System.Windows.Forms.RichTextBox richTextBox1;
         private System.Windows.Forms.Label lblTieuDeBangDuKien;
         private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label lblTongDuKien;
+        private System.Windows.Forms.Label lblTongThucChi;
+        private System.Windows.Forms.Label lblChenhLech;
         private System.Windows.Forms.Label lblNgayTaoError;
         private System.Windows.Forms.Label lblSoTienDuKienError;
         private System.Windows.Forms.Label lblTenDanhMucError;
@@ -710,5 +723,7 @@
         private System.Windows.Forms.ColumnHeader columnHeader7;
         private System.Windows.Forms.ColumnHeader columnHeader8;
         private System.Windows.Forms.ColumnHeader columnHeaderID;
+        private System.Windows.Forms.ColumnHeader columnHeaderLoai;
+        private System.Windows.Forms.ColumnHeader columnHeaderNgayTao;
     }
 }

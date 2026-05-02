@@ -62,6 +62,8 @@
             this.lblBoLocVaTimKiem = new System.Windows.Forms.Label();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.grbThemGiaoDich = new System.Windows.Forms.GroupBox();
+            this.txtSoTien = new System.Windows.Forms.TextBox();
+            this.label9 = new System.Windows.Forms.Label();
             this.txtId = new System.Windows.Forms.TextBox();
             this.buttonSuaGiaoDich = new System.Windows.Forms.Button();
             this.btnHuySua = new System.Windows.Forms.Button();
@@ -70,8 +72,6 @@
             this.label10 = new System.Windows.Forms.Label();
             this.comboBoxDanhMuc = new System.Windows.Forms.ComboBox();
             this.txtDanhMuc = new System.Windows.Forms.Label();
-            this.txtSoTien = new System.Windows.Forms.TextBox();
-            this.label9 = new System.Windows.Forms.Label();
             this.comboBoxLoaiGiaoDich = new System.Windows.Forms.ComboBox();
             this.lblLoaiGiaoDich = new System.Windows.Forms.Label();
             this.txtName = new System.Windows.Forms.TextBox();
@@ -512,6 +512,8 @@
             // grbThemGiaoDich
             // 
             this.grbThemGiaoDich.BackColor = System.Drawing.Color.White;
+            this.grbThemGiaoDich.Controls.Add(this.txtSoTien);
+            this.grbThemGiaoDich.Controls.Add(this.label9);
             this.grbThemGiaoDich.Controls.Add(this.txtId);
             this.grbThemGiaoDich.Controls.Add(this.buttonSuaGiaoDich);
             this.grbThemGiaoDich.Controls.Add(this.btnHuySua);
@@ -520,8 +522,6 @@
             this.grbThemGiaoDich.Controls.Add(this.label10);
             this.grbThemGiaoDich.Controls.Add(this.comboBoxDanhMuc);
             this.grbThemGiaoDich.Controls.Add(this.txtDanhMuc);
-            this.grbThemGiaoDich.Controls.Add(this.txtSoTien);
-            this.grbThemGiaoDich.Controls.Add(this.label9);
             this.grbThemGiaoDich.Controls.Add(this.comboBoxLoaiGiaoDich);
             this.grbThemGiaoDich.Controls.Add(this.lblLoaiGiaoDich);
             this.grbThemGiaoDich.Controls.Add(this.txtName);
@@ -533,6 +533,24 @@
             this.grbThemGiaoDich.TabIndex = 2;
             this.grbThemGiaoDich.TabStop = false;
             this.grbThemGiaoDich.Text = "Thêm Giao Dịch";
+            // 
+            // txtSoTien
+            // 
+            this.txtSoTien.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtSoTien.Location = new System.Drawing.Point(21, 281);
+            this.txtSoTien.Name = "txtSoTien";
+            this.txtSoTien.Size = new System.Drawing.Size(244, 22);
+            this.txtSoTien.TabIndex = 15;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label9.Location = new System.Drawing.Point(21, 262);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(56, 16);
+            this.label9.TabIndex = 14;
+            this.label9.Text = "Số Tiền";
             // 
             // txtId
             // 
@@ -586,7 +604,7 @@
             // dateTimePickerNgayGiaoDich
             // 
             this.dateTimePickerNgayGiaoDich.Font = new System.Drawing.Font("Arial Narrow", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dateTimePickerNgayGiaoDich.Location = new System.Drawing.Point(21, 281);
+            this.dateTimePickerNgayGiaoDich.Location = new System.Drawing.Point(21, 166);
             this.dateTimePickerNgayGiaoDich.Name = "dateTimePickerNgayGiaoDich";
             this.dateTimePickerNgayGiaoDich.Size = new System.Drawing.Size(244, 22);
             this.dateTimePickerNgayGiaoDich.TabIndex = 9;
@@ -595,7 +613,7 @@
             // 
             this.label10.AutoSize = true;
             this.label10.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label10.Location = new System.Drawing.Point(18, 252);
+            this.label10.Location = new System.Drawing.Point(21, 147);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(105, 16);
             this.label10.TabIndex = 8;
@@ -605,7 +623,7 @@
             // 
             this.comboBoxDanhMuc.Font = new System.Drawing.Font("Arial Narrow", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.comboBoxDanhMuc.FormattingEnabled = true;
-            this.comboBoxDanhMuc.Location = new System.Drawing.Point(21, 215);
+            this.comboBoxDanhMuc.Location = new System.Drawing.Point(21, 224);
             this.comboBoxDanhMuc.Name = "comboBoxDanhMuc";
             this.comboBoxDanhMuc.Size = new System.Drawing.Size(244, 24);
             this.comboBoxDanhMuc.TabIndex = 7;
@@ -615,29 +633,11 @@
             // 
             this.txtDanhMuc.AutoSize = true;
             this.txtDanhMuc.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtDanhMuc.Location = new System.Drawing.Point(18, 196);
+            this.txtDanhMuc.Location = new System.Drawing.Point(18, 205);
             this.txtDanhMuc.Name = "txtDanhMuc";
             this.txtDanhMuc.Size = new System.Drawing.Size(70, 16);
             this.txtDanhMuc.TabIndex = 6;
             this.txtDanhMuc.Text = "Danh Mục";
-            // 
-            // txtSoTien
-            // 
-            this.txtSoTien.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtSoTien.Location = new System.Drawing.Point(21, 162);
-            this.txtSoTien.Name = "txtSoTien";
-            this.txtSoTien.Size = new System.Drawing.Size(244, 22);
-            this.txtSoTien.TabIndex = 5;
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label9.Location = new System.Drawing.Point(18, 143);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(56, 16);
-            this.label9.TabIndex = 4;
-            this.label9.Text = "Số Tiền";
             // 
             // comboBoxLoaiGiaoDich
             // 
@@ -651,6 +651,7 @@
             this.comboBoxLoaiGiaoDich.Size = new System.Drawing.Size(244, 24);
             this.comboBoxLoaiGiaoDich.TabIndex = 3;
             this.comboBoxLoaiGiaoDich.Text = "Loại giao dịch";
+            this.comboBoxLoaiGiaoDich.SelectedIndexChanged += new System.EventHandler(this.comboBoxLoaiGiaoDich_SelectedIndexChanged);
             // 
             // lblLoaiGiaoDich
             // 
@@ -845,8 +846,6 @@
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.ComboBox comboBoxDanhMuc;
         private System.Windows.Forms.Label txtDanhMuc;
-        private System.Windows.Forms.TextBox txtSoTien;
-        private System.Windows.Forms.Label label9;
         private System.Windows.Forms.ComboBox comboBoxLoaiGiaoDich;
         private System.Windows.Forms.Label lblLoaiGiaoDich;
         private System.Windows.Forms.TextBox txtName;
@@ -885,6 +884,8 @@
         private System.Windows.Forms.Button btnNguoiDung;
         private System.Windows.Forms.Panel panel4;
         private System.Windows.Forms.Panel panel5;
+        private System.Windows.Forms.TextBox txtSoTien;
+        private System.Windows.Forms.Label label9;
     }
 }
 

@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -12,7 +13,7 @@ namespace QuanLyChiTieu
 {
     public partial class BangDuKien : Form
     {
-
+        CategoryService categoryService = new CategoryService();
         BangDuKienDL bangDuKienDL = new BangDuKienDL();
 
         public BangDuKien()
@@ -23,15 +24,31 @@ namespace QuanLyChiTieu
 
         void hienThiDanhMuc(string thang,string nam)
         {
-            List<ShareddData.DanhMuc> danhMucs = bangDuKienDL.hienThiBangDuKien(thang, nam);
-            BangTongHop.Items.Clear();
-            for(int i = 0; i < danhMucs.Count; i++)
+            try
             {
-                Button btnEdit = new Button();
-                btnEdit.Text = "Sửa";
-                Button btnRemove = new Button();
-                btnRemove.Text = "Xóa";
-                BangTongHop.Items.Add(new ListViewItem(new string[] { danhMucs[i].TenDanhMuc, danhMucs[i].TienDuKien.ToString(), "0", danhMucs[i].TienDuKien.ToString(), danhMucs[i].Id.ToString() }));
+                List<ShareddData.DanhMuc> danhMucs = bangDuKienDL.hienThiBangDuKien(thang, nam);
+                BangTongHop.Items.Clear();
+                decimal tongDuKien = 0;
+                decimal tongThucChi = 0;
+                for (int i = 0; i < danhMucs.Count; i++)
+                {
+                    tongDuKien += decimal.Parse(danhMucs[i].TienDuKien.ToString());
+                    tongThucChi += decimal.Parse(danhMucs[i].TienThucChi.ToString());
+                    Button btnEdit = new Button();
+                    btnEdit.Text = "Sửa";
+                    Button btnRemove = new Button();
+                    btnRemove.Text = "Xóa";
+                    decimal chenhLech = danhMucs[i].TienDuKien - danhMucs[i].TienThucChi;
+                    BangTongHop.Items.Add(new ListViewItem(new string[] { danhMucs[i].TenDanhMuc, danhMucs[i].TienDuKien.ToString(), danhMucs[i].TienThucChi.ToString(), chenhLech.ToString(), danhMucs[i].Id.ToString(), danhMucs[i].IDBangDuKien.ToString(), danhMucs[i].NgayTao.ToString() }));
+                }
+
+                lblTongThucChi.Text = tongThucChi.ToString();
+                lblTongDuKien.Text = tongDuKien.ToString();
+                lblChenhLech.Text = (tongDuKien - tongThucChi).ToString();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi hiển thị danh mục:", ex.Message);
             }
 
         }
@@ -206,15 +223,63 @@ namespace QuanLyChiTieu
             this.Close();
 
         }
+
+        private void Sua_Click(object sender, EventArgs e)
+        {
+            if(BangTongHop.SelectedItems.Count == 0)
+            {
+                MessageBox.Show("Bạn phải chọn 1 danh mục trong bảng dự kiến để chỉnh sửa");
+                return;
+            }
+
+            ListViewItem item = (ListViewItem)BangTongHop.SelectedItems[0];
+            string tenDanhMuc = item.SubItems[0].Text;
+            decimal tienDuKien = decimal.Parse(item.SubItems[1].Text);
+            decimal tienThucChi = decimal.Parse(item.SubItems[2].Text);
+            int id = int.Parse(item.SubItems[4].Text);
+            string loai = item.SubItems[5].Text;
+            string ngayTao = item.SubItems[5].Text;
+
+
+            if(comboBoxLoaiGiaoDich.Text.Length > 0)
+            {
+                loai = comboBoxLoaiGiaoDich.Text;
+            }
+            if (txtTenDanhMuc.Text.Length > 0)
+            {
+                tenDanhMuc = txtTenDanhMuc.Text;
+            }
+            if(txtTienDuKien.Text.Length > 0)
+            {
+                tienDuKien = decimal.Parse(txtTienDuKien.Text);
+            }
+            if(dateTimePickerNgayTao.Text.Length > 0)
+            {
+                
+                ngayTao = dateTimePickerNgayTao.Value.ToString("dd/MM/yyyy");
+                string thang = ngayTao.Split('/')[1];
+                string nam = ngayTao.Split('/')[2];
+
+                if(thang != comboBoxMonth.Text || nam != txtNam.Text)
+                {
+                    MessageBox.Show("Ngày tạo phải nằm trong tháng và năm của bộ lọc");
+                    return;
+                }
+            }
+
+            try
+            {
+                bool ok = categoryService.editCategory(id, tenDanhMuc, loai, ngayTao, tienDuKien, tienThucChi);
+                if (ok)
+                {
+                    MessageBox.Show("Cập nhật danh mục thành công");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
     }
-    class DanhMuc
-    {
-        public int Id { get; set; }
-        public string TenDanhMuc { get; set; }
-        public DateTime NgayTao { get; set; }
-        public string Loai { get; set; }
-        public decimal TienDuKien { get; set; }
-        public int? IDGiaoDich { get; set; }
-        public int IDBangDuKien { get; set; }
-    }
+    
 }

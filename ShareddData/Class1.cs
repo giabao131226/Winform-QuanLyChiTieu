@@ -131,6 +131,111 @@ namespace ShareddData
         
     }
 
+    public class CategoryService {
+
+
+        public string getIdByCategoryName(string tenDanhMuc)
+        {
+            using (SqlConnection conn = new SqlConnection(@"Server=.;Database=QuanLyChiTieu;Trusted_Connection=True;"))
+            {
+                try
+                {
+                    conn.Open();
+                    string query = "SELECT ID FROM DanhMuc WHERE tenDanhMuc = @tenDanhMuc;";
+                    SqlCommand cmd = new SqlCommand(query, conn);
+                    cmd.Parameters.AddWithValue("@tenDanhMuc", tenDanhMuc);
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    if (reader.Read())
+                    {
+                        return reader.GetInt32(0).ToString();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message);
+                }
+                finally
+                {
+                    conn.Close();
+                }
+            }
+            return null;
+        }
+        public List<DanhMuc> hienThiDanhMuc(string loai, string thang, string nam)
+        {
+            using (SqlConnection conn = new SqlConnection(@"Server=.;Database=QuanLyChiTieu;Trusted_Connection=True;"))
+            {
+                try
+                {
+                    List<DanhMuc> danhMucs = new List<DanhMuc>();
+                    conn.Open();
+                    
+                    string query = "SELECT dm.* FROM TaiKhoan as tk,DanhMuc as dm,BangDuKien as bdk WHERE tk.ID = @userID AND tk.ID = bdk.IDTaiKhoan AND bdk.ID = dm.IDBangDuKien AND MONTH(dm.NgayTao) = @thang AND YEAR(dm.NgayTao) = @nam AND dm.Loai = @loai;";
+                    SqlCommand cmd = new SqlCommand(query, conn);
+                    cmd.Parameters.AddWithValue("@loai", loai);
+                    cmd.Parameters.AddWithValue("@thang", int.Parse(thang));
+                    cmd.Parameters.AddWithValue("@nam", int.Parse(nam));
+                    cmd.Parameters.AddWithValue("@userID", AppSession.UserId);
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        DanhMuc newData = new DanhMuc
+                        {
+                            Id = Convert.ToInt32(reader["ID"]),
+                            TenDanhMuc = Convert.ToString(reader["TenDanhMuc"]),
+                            NgayTao = Convert.ToDateTime(reader["NgayTao"]),
+                            Loai = Convert.ToString(reader["Loai"]),
+                            TienDuKien = Convert.ToDecimal(reader["TienDuKien"]),
+                            TienThucChi = Convert.ToDecimal(reader["TienThucChi"]),
+                            IDBangDuKien = Convert.ToInt32(reader["IDBangDuKien"])
+
+                        };
+                        danhMucs.Add(newData);
+                    }
+                    return danhMucs;
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message);
+                }
+                finally
+                {
+                    conn.Close();
+                }
+            }
+        }
+
+        public bool editCategory(int id,string tenDanhMuc,string loai,string ngayTao,decimal tienDuKien,decimal tienThucChi)
+        {
+            using(SqlConnection conn = new SqlConnection(@"Server=.;Database=QuanLyChiTieu;Trusted_Connection=True;"))
+            {
+                try
+                {
+                    conn.Open();
+                    string query = "UPDATE DanhMuc SET tenDanhMuc = @tenDanhMuc ,Loai = @loai ,NgayTao = @ngayTao ,tienDuKien = @tienDuKien ,tienThucChi = @tienThucChi WHERE ID = @id";
+                    SqlCommand cmd = new SqlCommand(query, conn);
+                    cmd.Parameters.AddWithValue("@tenDanhMuc", tenDanhMuc);
+                    cmd.Parameters.AddWithValue("@loai", loai);
+                    cmd.Parameters.AddWithValue("@ngayTao", DateTime.ParseExact(ngayTao,"dd/MM/yyyy",null));
+                    cmd.Parameters.AddWithValue("@tienDuKien", tienDuKien);
+                    cmd.Parameters.AddWithValue("@tienThucChi", tienThucChi);
+                    cmd.Parameters.AddWithValue("@id", id);
+
+                    int row = cmd.ExecuteNonQuery();
+                    return row > 0;
+
+                } catch (Exception ex) {
+                    throw new Exception(ex.Message);
+                }
+                finally
+                {
+                    conn.Close();
+                }
+                
+            }    
+        }
+    }
+
     public class DanhMuc
     {
         public int Id { get; set; }
@@ -138,7 +243,7 @@ namespace ShareddData
         public DateTime NgayTao { get; set; }
         public string Loai { get; set; }
         public decimal TienDuKien { get; set; }
-        public int? IDGiaoDich { get; set; }
+        public decimal TienThucChi { get; set; }
         public int IDBangDuKien { get; set; }
     }
 
@@ -203,7 +308,7 @@ namespace ShareddData
                             NgayTao = reader.GetDateTime(2),
                             Loai = reader.GetString(3),
                             TienDuKien = reader.GetDecimal(4),
-                            IDGiaoDich = reader.IsDBNull(5) ? (int?)null : reader.GetInt32(5),
+                            TienThucChi = reader.GetDecimal(5),
                             IDBangDuKien = reader.GetInt32(6)
                         };
                         danhMucs.Add(dm);
@@ -261,7 +366,7 @@ namespace ShareddData
                 try
                 {
                     conn.Open();
-                    string query = "INSERT INTO DanhMuc (tenDanhMuc, NgayTao, Loai, tienDuKien, IDGiaoDich, IDBangDuKien) VALUES (@tenDanhMuc, @ngayTao, @loaiGiaoDich, @soTien, NULL, @idBangDuKien);";
+                    string query = "INSERT INTO DanhMuc (tenDanhMuc, NgayTao, Loai, tienDuKien,tienThucChi , IDBangDuKien) VALUES (@tenDanhMuc, @ngayTao, @loaiGiaoDich, @soTien, 0, @idBangDuKien);";
                     SqlCommand cmd = new SqlCommand(query, conn);
                     cmd.Parameters.AddWithValue("@userId", AppSession.UserId);
                     cmd.Parameters.AddWithValue("@tenDanhMuc", tenDanhMuc);
@@ -305,6 +410,126 @@ namespace ShareddData
                     conn.Close();
                 }
             }
+        }
+    }
+
+    public class Transition
+    {
+        public int Id { get; set; }
+        public string TenGiaoDich { get; set; }
+        public DateTime NgayTao { get; set; }
+        public string Loai { get; set; }
+        public decimal SoTien { get; set; }
+        public int? IDDanhMuc { get; set; }
+        public string TenDanhMuc { get; set; }
+        public int IDTaiKhoan { get; set; }
+    }
+    public class TransitionService
+    {
+        public List<Transition> loadTransition(string thang, string nam,string loai,string textSearch)
+        {
+            using (SqlConnection conn = new SqlConnection(@"Server=.;Database=QuanLyChiTieu;Trusted_Connection=True;"))
+            {
+                try
+                {
+                    conn.Open();
+                    string query = @"
+                    SELECT gd.*, dm.tenDanhMuc
+                    FROM TaiKhoan as tk, GiaoDich as gd, DanhMuc as dm
+                    WHERE tk.ID = @userID 
+                    AND gd.IDDanhMuc = dm.ID 
+                    AND tk.ID = gd.IDTaiKhoan 
+                    AND MONTH(gd.NgayGiaoDich) = @thang 
+                    AND YEAR(gd.NgayGiaoDich) = @nam";
+                    SqlCommand cmd = new SqlCommand(query, conn);
+                    cmd.Parameters.AddWithValue("@thang", int.Parse(thang));
+                    cmd.Parameters.AddWithValue("@nam", int.Parse(nam));
+                    cmd.Parameters.AddWithValue("@userID", AppSession.UserId);
+                    
+                    if(loai != "Tất cả" && loai!="")
+                    {
+                        cmd.CommandText += " AND gd.Loai = @loai";
+                        cmd.Parameters.AddWithValue("@loai", loai);
+                    }
+                    if(!string.IsNullOrEmpty(textSearch))
+                    {
+                        cmd.CommandText += " AND gd.TenGiaoDich LIKE @textSearch";
+                        cmd.Parameters.AddWithValue("@textSearch", "%" + textSearch + "%");
+                    }
+                    Console.WriteLine(cmd.CommandText);
+                    Console.WriteLine(thang);
+                    Console.WriteLine(nam);
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    List<Transition> transitions = new List<Transition>();
+                    while (reader.Read())
+                    {
+                        Transition transition = new Transition
+                        {
+                            Id = Convert.ToInt32(reader["ID"]),
+                            TenGiaoDich = Convert.ToString(reader["tenGiaoDich"]),
+                            NgayTao = Convert.ToDateTime(reader["NgayGiaoDich"]),
+                            Loai = Convert.ToString(reader["Loai"]),
+                            SoTien = Convert.ToDecimal(reader["soTien"]),
+                            IDDanhMuc = reader["IDDanhMuc"] != DBNull.Value
+                    ? Convert.ToInt32(reader["IDDanhMuc"])
+                    : (int?)null,
+                            TenDanhMuc = reader["tenDanhMuc"] != DBNull.Value
+                    ? Convert.ToString(reader["tenDanhMuc"])
+                    : "",
+                            IDTaiKhoan = Convert.ToInt32(reader["IDTaiKhoan"])
+                        };
+                        transitions.Add(transition);
+                    }
+                    
+                    return transitions;
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message);
+                }
+                finally
+                {
+                    conn.Close();
+                }
+            }
+        }
+
+        public bool addTransition(string tenGiaoDich, string loai, decimal soTien, string ngayTao, string tenDanhMuc)
+        {
+            using (SqlConnection conn = new SqlConnection(@"Server=.;Database=QuanLyChiTieu;Trusted_Connection=True;"))
+            {
+                try
+                {
+                    conn.Open();
+                    string query = "INSERT INTO GiaoDich (tenGiaoDich, NgayGiaoDich, soTien, Loai, IDTaiKhoan, IDDanhMuc) VALUES (@tenGiaoDich, @ngayTao, @soTien, @loai, @userID, (SELECT ID FROM DanhMuc WHERE tenDanhMuc = @tenDanhMuc));";
+                    SqlCommand cmd = new SqlCommand(query, conn);
+                    cmd.Parameters.AddWithValue("@tenGiaoDich", tenGiaoDich);
+                    cmd.Parameters.AddWithValue("@loai", loai);
+                    cmd.Parameters.AddWithValue("@soTien", soTien);
+                    cmd.Parameters.AddWithValue("@ngayTao", DateTime.ParseExact(ngayTao, "dd/MM/yyyy", null));
+                    cmd.Parameters.AddWithValue("@userID", AppSession.UserId);
+                    cmd.Parameters.AddWithValue("@tenDanhMuc", tenDanhMuc);
+                    int row = cmd.ExecuteNonQuery();
+                    if (row > 0)
+                    {
+                        string updateTienThucChi = "UPDATE DanhMuc SET tienThucChi = tienThucChi + @soTien WHERE tenDanhMuc = @tenDanhMuc;";
+                        SqlCommand updateCmd = new SqlCommand(updateTienThucChi, conn);
+                        updateCmd.Parameters.AddWithValue("@soTien", soTien);
+                        updateCmd.Parameters.AddWithValue("@tenDanhMuc", tenDanhMuc);
+                        int check = updateCmd.ExecuteNonQuery();
+                        return check > 0;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message);
+                }
+                finally
+                {
+                    conn.Close();
+                }
+            }
+            return false;
         }
     }
 }
