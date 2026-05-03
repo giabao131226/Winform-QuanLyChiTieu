@@ -16,16 +16,9 @@ namespace QuanLyChiTieu
 
     public partial class FormQuanLyChiTieu : Form
     {
-       
         Boolean flagLocNgay = false;
-        List<ChiTieu> chiTieu = new List<ChiTieu>{
-    new ChiTieu { Id = "1", Title = "Nhận lương tháng 3", Type = "Thu", Category = "Lương", Date = new DateTime(2025, 6, 1).ToString("dd/MM/yyyy"), Amount = "2000000VND" },
-    new ChiTieu { Id = "2", Title = "Ăn sáng", Type = "Chi", Category = "Ăn uống", Date = new DateTime(2025, 6, 2).ToString("dd/MM/yyyy"), Amount = "30000VND" },
-    new ChiTieu { Id = "3", Title = "Mua sách", Type = "Chi", Category = "Giáo dục", Date = new DateTime(2025, 6, 3).ToString("dd/MM/yyyy"), Amount = "120000VND" },
-    new ChiTieu { Id = "4", Title = "Thưởng", Type = "Thu", Category = "Thưởng", Date = new DateTime(2025, 6, 5).ToString("dd/MM/yyyy"), Amount = "500000VND" },
-    new ChiTieu { Id = "5", Title = "Cà phê", Type = "Chi", Category = "Ăn uống", Date = new DateTime(2025, 6, 6).ToString("dd/MM/yyyy"), Amount = "40000VND" }
-};
-        List<ChiTieu> dataShow = new List<ChiTieu>();
+        List<ShareddData.Transition> dataShow = new List<ShareddData.Transition>();
+        List<ShareddData.Transition> chiTieu = new List<ShareddData.Transition>();
         List<ShareddData.DanhMuc> danhMucs = new List<ShareddData.DanhMuc>();
         CategoryService categoryService = new CategoryService();
         TransitionService transitionService = new TransitionService();
@@ -35,41 +28,27 @@ namespace QuanLyChiTieu
             InitializeComponent();
         }
 
-        void loadTableQuanLy(List<ChiTieu> data)
+        void loadTableQuanLy(List<ShareddData.Transition> data)
         {
             dataGridView1.Rows.Clear();
-            string thang = dateTimePickerNgayGiaoDich.Value.Month.ToString();
-            string nam = dateTimePickerNgayGiaoDich.Value.Year.ToString();
-            try
+            foreach (ShareddData.Transition t in data)
             {
-                List<ShareddData.Transition> transitions = transitionService.loadTransition(thang, nam, "", "");
-
-                Console.WriteLine("Count = " + transitions.Count);
-                foreach (var item in transitions)
-                    {
-                    
-                        dataGridView1.Rows.Add(item.Id, item.TenGiaoDich, item.Loai, item.TenDanhMuc, item.NgayTao.ToString("dd/MM/yyyy"), item.SoTien.ToString("N0") + "VND");
-                    }
-                
-            }
-            catch (Exception error)
-            {
-                MessageBox.Show("Lỗi khi tải giao dịch: " + error.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                dataGridView1.Rows.Add(t.Id, t.TenGiaoDich, t.Loai, t.TenDanhMuc, t.NgayTao, t.SoTien.ToString() + " VND");
             }
         }
         void loadThongKeSoDu()
         {
-            long tongThu = 0;
-            long tongChi = 0;
+            decimal tongThu = 0;
+            decimal tongChi = 0;
             foreach (var item in chiTieu)
             {
-                if (item.Type == "Thu")
+                if (item.Loai == "Thu")
                 {
-                    tongThu += long.Parse(item.Amount.Replace("VND", ""));
+                    tongThu += item.SoTien;
                 }
                 else
                 {
-                    tongChi += long.Parse(item.Amount.Replace("VND", ""));
+                    tongChi += item.SoTien;
                 }
             }
             lblTongThuNhap.Text = "Tổng Thu: " + tongThu.ToString("N0") + " VND";
@@ -85,18 +64,50 @@ namespace QuanLyChiTieu
             dateTimePickerNgayGiaoDich.Value = DateTime.Now;
         }
 
+       
         private void FormQuanLyChiTieu_Load(object sender, EventArgs e)
         {
-            foreach (var item in chiTieu)
-            {
-                dataShow.Add(item);
-            }
 
-            loadTableQuanLy(dataShow);
-            //loadThongKeSoDu();
+            string thang = dateTimePickerBoLocNgayGiaoDich.Value.Month.ToString();
+            string nam = dateTimePickerBoLocNgayGiaoDich.Value.Year.ToString();
+            try
+            {
+                string loai = comboBoxBoLocLoai.Text.ToString();
+                if (loai == "Loại Giao Dịch" || loai == "Tất Cả") loai = "";
+                Console.WriteLine(loai);
+                List<ShareddData.DanhMuc> danhMucs = categoryService.hienThiDanhMuc(loai, thang, nam);
+                comboBoxBoLocDanhMuc.Items.Clear();
+                comboBoxBoLocDanhMuc.Items.Add("Tất Cả");
+                foreach (var item in danhMucs)
+                {
+                    comboBoxBoLocDanhMuc.Items.Add(item.TenDanhMuc);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi load comboBox danh mục " + ex.Message);
+            }
+            try
+            {
+                List<ShareddData.Transition> transitions = transitionService.loadTransition(thang, nam, "", "");
+                foreach(var item in transitions)
+                {
+                    chiTieu.Add(item);
+                }
+                Console.WriteLine(chiTieu.Count);
+                copyData(chiTieu);
+                loadTableQuanLy(chiTieu);
+                loadThongKeSoDu();
+
+            }
+            catch (Exception error)
+            {
+                MessageBox.Show("Lỗi khi tải giao dịch: " + error.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            
         }
 
-        void copyData(List<ChiTieu> data)
+        void copyData(List<ShareddData.Transition> data)
         {
             dataShow.Clear();
             foreach (var item in data)
@@ -131,12 +142,13 @@ namespace QuanLyChiTieu
                     if (ok)
                     {
                         MessageBox.Show("Thêm giao dịch thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        ChiTieu newTransition = new ChiTieu((chiTieu.Count + 1).ToString(), tenGiaoDich, loai, danhMuc, ngayTao, soTien.ToString("N0") + "VND");
-                        //chiTieu.Add(newTransition);
-                        //copyData(chiTieu);
-                        //loadTableQuanLy(dataShow);
-                        //loadThongKeSoDu();
-                        //resetForm();
+                        string thang = dateTimePickerNgayGiaoDich.Value.Month.ToString();
+                        string nam = dateTimePickerNgayGiaoDich.Value.Year.ToString();
+                        chiTieu = transitionService.loadTransition(thang,nam,"","");
+                        copyData(chiTieu);
+                        loadTableQuanLy(dataShow);
+                        resetForm();
+                        loadThongKeSoDu();
                     }
                     else
                     {
@@ -166,12 +178,29 @@ namespace QuanLyChiTieu
                 if(check.ToString() == "OK")
                 {
                     int rowIndex = e.RowIndex;
-                    var id = dataGridView1.Rows[rowIndex].Cells["thId"].Value;
-                    chiTieu.RemoveAll(item => item.Id == id.ToString());
-                    MessageBox.Show("Bạn vừa xoá sản phẩm có Id là " + id, "Thông Báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    copyData(chiTieu);
-                    loadTableQuanLy(dataShow);
-                    loadThongKeSoDu();
+                    int id = int.Parse(dataGridView1.Rows[rowIndex].Cells["thId"].Value.ToString());
+                    string tenDanhMuc = dataGridView1.Rows[rowIndex].Cells["thDanhMuc"].Value.ToString();
+                    try
+                    {
+                        bool ok = transitionService.removeTransition(id,tenDanhMuc);
+                        if (ok)
+                        {
+                            MessageBox.Show("Bạn vừa xoá sản phẩm có Id là " + id, "Thông Báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            List<ShareddData.Transition> newList = new List<ShareddData.Transition>();
+                            foreach(var item in chiTieu)
+                            {
+                                if(item.Id != id) newList.Add(item); 
+                            }
+                            chiTieu = newList;
+                            copyData(newList);
+                            loadTableQuanLy(dataShow);
+                            loadThongKeSoDu();
+                        }
+                    }
+                    catch (Exception error)
+                    {
+                        MessageBox.Show(error.Message);
+                    }
                 }
             }
 
@@ -187,14 +216,12 @@ namespace QuanLyChiTieu
                 var category = dataGridView1.Rows[rowIndex].Cells["thDanhMuc"].Value;
                 var date = dataGridView1.Rows[rowIndex].Cells["thNgayGiaoDich"].Value;
                 var amount = dataGridView1.Rows[rowIndex].Cells["thSoTien"].Value;
-
                 grbThemGiaoDich.Text = "Sửa Giao Dịch";
                 btnHuySua.Visible = true;
                 txtName.Text = title.ToString();
                 txtSoTien.Text = amount.ToString();
                 txtId.Text = id.ToString();
                 comboBoxLoaiGiaoDich.SelectedItem = type.ToString();
-                dateTimePickerBoLocNgayGiaoDich.Value = DateTime.ParseExact(date.ToString(), "dd/MM/yyyy", null);
 
                 buttonSuaGiaoDich.Visible = true;
             }
@@ -202,19 +229,37 @@ namespace QuanLyChiTieu
 
         private void comboBoxBoLocLoai_SelectedIndexChanged_1(object sender, EventArgs e)
         {
+            try
+            {
+                string thang = dateTimePickerBoLocNgayGiaoDich.Value.Month.ToString();
+                string nam = dateTimePickerBoLocNgayGiaoDich.Value.Year.ToString();
+                string loai = comboBoxBoLocLoai.Text.ToString();
+                if (loai == "Loại Giao Dịch" || loai == "Tất Cả") loai = "";
+                List<ShareddData.DanhMuc> danhMucs = categoryService.hienThiDanhMuc(loai, thang, nam);
+                comboBoxBoLocDanhMuc.Items.Clear();
+                comboBoxBoLocDanhMuc.Items.Add("Tất Cả");
+                foreach (var item in danhMucs)
+                {
+                    comboBoxBoLocDanhMuc.Items.Add(item.TenDanhMuc);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi load comboBox danh mục " + ex.Message);
+            }
             handleFilterAndSeacrh(flagLocNgay);
         }
 
-        List<ChiTieu> boLocLoaiGiaoDich(List<ChiTieu> data)
+        List<ShareddData.Transition> boLocLoaiGiaoDich(List<ShareddData.Transition> data)
         {
             if(comboBoxBoLocLoai.SelectedItem != null && (comboBoxBoLocLoai.SelectedItem.ToString() == "Tất Cả" || comboBoxBoLocLoai.SelectedItem.ToString() == ""))
             {
                 return data;
             }
-            List<ChiTieu> dataLoc = new List<ChiTieu>();
+            List<ShareddData.Transition> dataLoc = new List<ShareddData.Transition>();
             foreach (var item in data)
             {
-                if (comboBoxBoLocLoai.SelectedItem != null && item.Type == comboBoxBoLocLoai.SelectedItem.ToString())
+                if (comboBoxBoLocLoai.SelectedItem != null && item.Loai == comboBoxBoLocLoai.SelectedItem.ToString())
                 {
                     dataLoc.Add(item);
                 }
@@ -223,40 +268,60 @@ namespace QuanLyChiTieu
             return dataLoc;
         }
 
-        List<ChiTieu> boLocNgayGiaoDich(List<ChiTieu> data)
+        List<ShareddData.Transition> boLocNgayGiaoDich(List<ShareddData.Transition> data)
         {
-            List<ChiTieu> dataLoc = new List<ChiTieu>();
+            List<ShareddData.Transition> dataLoc = new List<ShareddData.Transition>();
             string dateLoc = dateTimePickerBoLocNgayGiaoDich.Value.ToString("dd/MM/yyyy");
 
             foreach (var item in data)
             {
                 
-                if (item.Date == dateLoc)
+                if (item.NgayTao.ToString("dd/MM/yyyy") == dateLoc)
                 {
                     dataLoc.Add(item);
                 }
             }
             return dataLoc;
         }
-        List<ChiTieu> timKiemTheoTen(List<ChiTieu> data)
+        List<ShareddData.Transition> timKiemTheoTen(List<ShareddData.Transition> data)
         {
-            List<ChiTieu> dataLoc = new List<ChiTieu>();
+            List<ShareddData.Transition> dataLoc = new List<ShareddData.Transition>();
             if(txtTimKiem.Text == "")
             {
                 return data;
             }
             foreach (var item in data)
             {
-                if (item.Title.ToLower().Contains(txtTimKiem.Text.ToLower()))
+                if (item.TenGiaoDich.ToLower().Contains(txtTimKiem.Text.ToLower()))
                 {
                     dataLoc.Add(item);
                 }
             }
             return dataLoc;
         }
+
+        List<ShareddData.Transition> boLocDanhMuc(List<ShareddData.Transition> data)
+        {
+            List<ShareddData.Transition> dataLoc = new List<ShareddData.Transition>();
+            if(comboBoxBoLocDanhMuc.SelectedItem == null || comboBoxBoLocDanhMuc.SelectedItem.ToString() == "Tất Cả")
+            {
+                return data;
+            }
+            foreach (var item in data)
+            {
+                if (item.TenDanhMuc.ToLower().Contains(comboBoxBoLocDanhMuc.SelectedItem.ToString().ToLower())){
+                    dataLoc.Add(item);
+                }
+            }
+            return dataLoc;
+        }
+
         void handleFilterAndSeacrh(Boolean flagLocNgay)
         {
-            List<ChiTieu> dataShowNew = chiTieu;
+            List<ShareddData.Transition> dataShowNew = chiTieu;
+            string loai = comboBoxBoLocLoai.Text;
+            string ngayTao = dateTimePickerBoLocNgayGiaoDich.Value.ToString("dd/MM/yyyy");
+            string textSearch = txtTimKiem.Text;
 
             if (flagLocNgay)
             {
@@ -264,10 +329,8 @@ namespace QuanLyChiTieu
             }
 
             dataShowNew = boLocLoaiGiaoDich(dataShowNew);
-            foreach(var item in dataShowNew)
-            {
-                Console.WriteLine(item.Title);
-            }
+
+            dataShowNew = boLocDanhMuc(dataShowNew);
 
             dataShowNew = timKiemTheoTen(dataShowNew);
 
@@ -292,7 +355,7 @@ namespace QuanLyChiTieu
         {
             flagLocNgay = false;
             comboBoxBoLocLoai.SelectedIndex = 0;
-            //comboBoxBoLocDanhMuc.SelectedIndex = -1;
+            comboBoxBoLocDanhMuc.SelectedIndex = 0;
             dateTimePickerBoLocNgayGiaoDich.Value = DateTime.Now;
             txtTimKiem.Text = "";
             copyData(chiTieu);
@@ -301,21 +364,34 @@ namespace QuanLyChiTieu
 
         private void buttonSuaGiaoDich_Click(object sender, EventArgs e)
         {
-            string id = txtId.Text;
-            var chiTieuSua = chiTieu.FirstOrDefault(item => item.Id == id);
-            if(chiTieuSua != null)
+            try
             {
-                chiTieuSua.Title = txtName.Text;
-                chiTieuSua.Type = comboBoxLoaiGiaoDich.SelectedItem.ToString();
-                chiTieuSua.Date = dateTimePickerNgayGiaoDich.Value.ToString("dd/MM/yyyy");
-                chiTieuSua.Amount = txtSoTien.Text + "VND";
-                copyData(chiTieu);
-                loadTableQuanLy(dataShow);
-                loadThongKeSoDu();
-                grbThemGiaoDich.Text = "Thêm Giao Dịch";
-                btnHuySua.Visible = false;
-                buttonSuaGiaoDich.Visible = false;
-                resetForm();
+                int id = int.Parse(txtId.Text);
+                string tenGiaoDich = txtName.Text;
+                string loaiGiaoDich = comboBoxLoaiGiaoDich.SelectedItem.ToString();
+                string ngayTao = dateTimePickerNgayGiaoDich.Value.ToString("dd/MM/yyyy");
+                decimal soTien = decimal.Parse(txtSoTien.Text);
+                string tenDanhMuc = comboBoxDanhMuc.Text;
+
+                bool ok = transitionService.editTransition(id, tenGiaoDich, loaiGiaoDich, soTien, ngayTao, tenDanhMuc);
+
+                if (ok)
+                {
+                    string thang = dateTimePickerNgayGiaoDich.Value.Month.ToString();
+                    string nam = dateTimePickerNgayGiaoDich.Value.Year.ToString();
+                    chiTieu = transitionService.loadTransition(thang, nam, "", "");
+                    copyData(chiTieu);
+                    loadTableQuanLy(dataShow);
+                    loadThongKeSoDu();
+                    grbThemGiaoDich.Text = "Thêm Giao Dịch";
+                    btnHuySua.Visible = false;
+                    buttonSuaGiaoDich.Visible = false;
+                    resetForm();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi cập nhật " + ex.Message);
             }
         }
 
@@ -347,6 +423,10 @@ namespace QuanLyChiTieu
 
         void loadDanhMuc()
         {
+            if(comboBoxLoaiGiaoDich.SelectedItem == null)
+            {
+                return;
+            }
             string thang = dateTimePickerNgayGiaoDich.Value.Month.ToString();
             string nam = dateTimePickerNgayGiaoDich.Value.Year.ToString();
             string selectedType = comboBoxLoaiGiaoDich.SelectedItem.ToString();
@@ -365,13 +445,15 @@ namespace QuanLyChiTieu
 
         }
 
-        private void comboBoxLoaiGiaoDich_SelectedIndexChanged(object sender, EventArgs e)
+        private void comboBoxLoaiGiaoDich_SelectedIndexChanged_1(object sender, EventArgs e)
         {
-            
             loadDanhMuc();
         }
 
-        
+        private void comboBoxBoLocDanhMuc_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            handleFilterAndSeacrh(flagLocNgay);
+        }
     }
 
     class ChiTieu

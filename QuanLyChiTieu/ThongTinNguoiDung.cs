@@ -11,6 +11,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Validate;
+using ShareddData;
 namespace QuanLyChiTieu
 {
     public partial class ThongTinNguoiDung : Form
@@ -157,6 +158,18 @@ namespace QuanLyChiTieu
         {
             FormQuanLyChiTieu formQuanLyChiTieu = new FormQuanLyChiTieu();
             formQuanLyChiTieu.Show();
+            this.Hide();
+        }
+
+        private void btnDangXuat_Click(object sender, EventArgs e)
+        {
+            ShareddData.AppSession.UserId = -1;
+            ShareddData.AppSession.phoneNumber = "";
+            ShareddData.AppSession.userName = "";
+            ShareddData.AppSession.Email = "";
+
+            DangNhap frmDangNhap = new DangNhap();
+            frmDangNhap.Show();
             this.Hide();
         }
     }

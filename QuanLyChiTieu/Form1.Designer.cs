@@ -465,6 +465,7 @@
             this.comboBoxBoLocDanhMuc.Size = new System.Drawing.Size(208, 24);
             this.comboBoxBoLocDanhMuc.TabIndex = 3;
             this.comboBoxBoLocDanhMuc.Text = "Danh Mục";
+            this.comboBoxBoLocDanhMuc.SelectedIndexChanged += new System.EventHandler(this.comboBoxBoLocDanhMuc_SelectedIndexChanged);
             // 
             // comboBoxBoLocLoai
             // 
@@ -651,7 +652,7 @@
             this.comboBoxLoaiGiaoDich.Size = new System.Drawing.Size(244, 24);
             this.comboBoxLoaiGiaoDich.TabIndex = 3;
             this.comboBoxLoaiGiaoDich.Text = "Loại giao dịch";
-            this.comboBoxLoaiGiaoDich.SelectedIndexChanged += new System.EventHandler(this.comboBoxLoaiGiaoDich_SelectedIndexChanged);
+            this.comboBoxLoaiGiaoDich.SelectedIndexChanged += new System.EventHandler(this.comboBoxLoaiGiaoDich_SelectedIndexChanged_1);
             // 
             // lblLoaiGiaoDich
             // 

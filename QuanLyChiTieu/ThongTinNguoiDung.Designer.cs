@@ -282,6 +282,7 @@
             this.btnDangXuat.TabIndex = 8;
             this.btnDangXuat.Text = "Đăng Xuất";
             this.btnDangXuat.UseVisualStyleBackColor = true;
+            this.btnDangXuat.Click += new System.EventHandler(this.btnDangXuat_Click);
             // 
             // lblSoDienThoai
             // 

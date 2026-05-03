@@ -125,14 +125,13 @@ namespace ShareddData
                     conn.Close();
                 }
             }
-            return false;
+            //return false;
         }
 
         
     }
 
     public class CategoryService {
-
 
         public string getIdByCategoryName(string tenDanhMuc)
         {
@@ -170,12 +169,16 @@ namespace ShareddData
                     List<DanhMuc> danhMucs = new List<DanhMuc>();
                     conn.Open();
                     
-                    string query = "SELECT dm.* FROM TaiKhoan as tk,DanhMuc as dm,BangDuKien as bdk WHERE tk.ID = @userID AND tk.ID = bdk.IDTaiKhoan AND bdk.ID = dm.IDBangDuKien AND MONTH(dm.NgayTao) = @thang AND YEAR(dm.NgayTao) = @nam AND dm.Loai = @loai;";
+                    string query = "SELECT dm.* FROM TaiKhoan as tk,DanhMuc as dm,BangDuKien as bdk WHERE tk.ID = @userID AND tk.ID = bdk.IDTaiKhoan AND bdk.ID = dm.IDBangDuKien AND MONTH(dm.NgayTao) = @thang AND YEAR(dm.NgayTao) = @nam ";
                     SqlCommand cmd = new SqlCommand(query, conn);
-                    cmd.Parameters.AddWithValue("@loai", loai);
                     cmd.Parameters.AddWithValue("@thang", int.Parse(thang));
                     cmd.Parameters.AddWithValue("@nam", int.Parse(nam));
                     cmd.Parameters.AddWithValue("@userID", AppSession.UserId);
+                    if (loai.Length > 0)
+                    {
+                        cmd.CommandText += "AND dm.Loai = @loai;";
+                        cmd.Parameters.AddWithValue("@loai", loai);
+                    }
                     SqlDataReader reader = cmd.ExecuteReader();
                     while (reader.Read())
                     {
@@ -530,6 +533,102 @@ namespace ShareddData
                 }
             }
             return false;
+        }
+
+        public bool removeTransition(int id,string tenDanhMuc)
+        {
+            using (SqlConnection conn = new SqlConnection(@"Server=.;Database=QuanLyChiTieu;Trusted_Connection=True;"))
+            {
+                try
+                {
+                    conn.Open();
+                    string query = @"DELETE GiaoDich WHERE ID = @id;";
+                    string query2 = @"UPDATE DanhMuc
+SET tienThucChi = tienThucChi - (SELECT soTien
+								FROM GiaoDich WHERE ID = @id)
+WHERE tenDanhMuc = @tenDanhMuc;";
+                    SqlCommand cmd = new SqlCommand(query, conn);
+                    SqlCommand cmd2 = new SqlCommand(query2, conn);
+                    cmd2.Parameters.AddWithValue("@id", id);
+                    cmd2.Parameters.AddWithValue("@tenDanhMuc", tenDanhMuc);
+                    cmd2.ExecuteNonQuery();
+                    cmd.Parameters.AddWithValue("@id", id);
+                    int row = cmd.ExecuteNonQuery();
+                    return row > 0;
+
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message);
+                }
+                finally
+                {
+                    conn.Close();
+                }
+            }
+        }
+
+        public bool editTransition(int id,string tenGiaoDich,string loai, decimal soTien, string ngayTao, string tenDanhMuc)
+        {
+            using (SqlConnection conn = new SqlConnection(@"Server=.;Database=QuanLyChiTieu;Trusted_Connection=True;"))
+            {
+                try
+                {
+                    conn.Open();
+                    string queryOldMoney = @"SELECT soTien FROM GiaoDich WHERE @id = id";
+                    decimal oldMoney = 0;
+                    string query = @"
+                            UPDATE gd
+                            SET 
+                            gd.tenGiaoDich = @tenGiaoDich,
+                            gd.Loai = @loai,
+                            gd.soTien = @soTien,
+                            gd.NgayGiaoDich = @ngayTao,
+                            gd.IDDanhMuc = dm.ID
+                            FROM GiaoDich gd
+                            JOIN DanhMuc dm ON dm.tenDanhMuc = @tenDanhMuc
+                            WHERE gd.ID = @id AND gd.IDTaiKhoan = @userID
+                            ";
+                
+                    SqlCommand cmd2 = new SqlCommand(query, conn);
+                    cmd2.Parameters.AddWithValue("@tenGiaoDich", tenGiaoDich);
+                    cmd2.Parameters.AddWithValue("@loai", loai);
+                    cmd2.Parameters.AddWithValue("@soTien", soTien);
+                    cmd2.Parameters.AddWithValue("@ngayTao", DateTime.ParseExact(ngayTao,"dd/MM/yyyy",null));
+                    cmd2.Parameters.AddWithValue("@tenDanhMuc", tenDanhMuc);
+                    cmd2.Parameters.AddWithValue("@userID", AppSession.UserId);
+                    cmd2.Parameters.AddWithValue("@id", id);
+                    
+                    SqlCommand cmd = new SqlCommand(queryOldMoney, conn);
+                    cmd.Parameters.AddWithValue("@id", id);
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    if (reader.Read())
+                    {
+                        oldMoney = Convert.ToDecimal(reader["soTien"]);
+                        Console.WriteLine(oldMoney);
+                        reader.Close();
+                        queryOldMoney = @"UPDATE DanhMuc SET tienThucChi = tienThucChi + @soTien - @oldMoney WHERE tenDanhMuc = @tenDanhMuc";
+                       
+                        cmd = new SqlCommand (queryOldMoney, conn);
+                        cmd.Parameters.AddWithValue("@soTien", soTien);
+                        cmd.Parameters.AddWithValue("@oldMoney", oldMoney);
+                        cmd.Parameters.AddWithValue("@tenDanhMuc", tenDanhMuc);
+                        cmd.ExecuteNonQuery();
+                    }
+                    int row = cmd2.ExecuteNonQuery();
+                    return row > 0;
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message);
+                }
+                finally
+                {
+                    conn.Close();
+                }
+                
+
+            }
         }
     }
 }
