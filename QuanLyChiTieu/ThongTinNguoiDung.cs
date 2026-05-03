@@ -97,12 +97,12 @@ namespace QuanLyChiTieu
                 loi += 1;
             }
             //Phải viết check trùng
-            if (userRespository.IsUserNameTaken(userName))
-            {
-                lblUserNameError.Text = "Tên đăng nhập đã tồn tại, vui lòng chọn tên khác.";
-                lblUserNameError.Visible = true;
-                loi += 1;
-            }
+            //if (userRespository.IsUserNameTaken(userName))
+            //{
+            //    lblUserNameError.Text = "Tên đăng nhập đã tồn tại, vui lòng chọn tên khác.";
+            //    lblUserNameError.Visible = true;
+            //    loi += 1;
+            //}
             //Validate email
             if (validate.validateEmail(email) == false)
             {
@@ -110,12 +110,12 @@ namespace QuanLyChiTieu
                 lblEmailError.Visible = true;
                 loi += 1;
             }
-            if (userRespository.IsEmailTaken(email))
-            {
-                lblEmailError.Text = "Email đã tồn tại, vui lòng sử dụng email khác.";
-                lblEmailError.Visible = true;
-                loi += 1;
-            }
+            //if (userRespository.IsEmailTaken(email))
+            //{
+            //    lblEmailError.Text = "Email đã tồn tại, vui lòng sử dụng email khác.";
+            //    lblEmailError.Visible = true;
+            //    loi += 1;
+            //}
             //Validate số điện thoại
             if (validate.validatePhoneNumber(sdt) == false)
             {
@@ -132,6 +132,8 @@ namespace QuanLyChiTieu
                 if (ok)
                 {
                     MessageBox.Show("Cập nhật thông tin thành công!");
+                    AppSession.phoneNumber = sdt;
+                    txtSoDienThoai.Text = sdt;
                     this.Refresh();
                 }
                 else
@@ -170,6 +172,13 @@ namespace QuanLyChiTieu
 
             DangNhap frmDangNhap = new DangNhap();
             frmDangNhap.Show();
+            this.Hide();
+        }
+
+        private void btnBieuDo_Click(object sender, EventArgs e)
+        {
+            BangDuKien bangDuKien = new BangDuKien();
+            bangDuKien.Show();
             this.Hide();
         }
     }

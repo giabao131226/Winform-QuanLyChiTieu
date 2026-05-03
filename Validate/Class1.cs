@@ -30,7 +30,7 @@ namespace Validate
 
         public bool validatePhoneNumber(string phoneNumber)
         {
-            return Regex.IsMatch(phoneNumber, @"^(0|\+84)[3-9][0-9]{8}$");
+            return Regex.IsMatch(phoneNumber, @"^(0|\+84)(3|5|7|8|9)[0-9]{8}$");
         }
 
         public class UserRespository

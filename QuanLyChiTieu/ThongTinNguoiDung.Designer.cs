@@ -81,6 +81,7 @@
             this.btnBieuDo.TabIndex = 7;
             this.btnBieuDo.Text = "📈";
             this.btnBieuDo.UseVisualStyleBackColor = true;
+            this.btnBieuDo.Click += new System.EventHandler(this.btnBieuDo_Click);
             // 
             // btnSoChiTieu
             // 

@@ -31,7 +31,7 @@ namespace ShareddData
                 {
                     conn.Open();
 
-                    string query = "SELECT Id, userName,email FROM TaiKhoan WHERE userName=@u AND passWord=@p";
+                    string query = "SELECT ID, userName,email,phone FROM TaiKhoan WHERE userName=@u AND passWord=@p";
 
                     SqlCommand cmd = new SqlCommand(query, conn);
                     cmd.Parameters.AddWithValue("@u", username);
@@ -45,7 +45,7 @@ namespace ShareddData
                         AppSession.UserId = reader.GetInt32(0);
                         AppSession.userName = reader.GetString(1);
                         AppSession.Email = reader.GetString(2);
-                        //AppSession.phoneNumber = reader.GetString(3);
+                        AppSession.phoneNumber = reader.GetString(3);
                         return true;
                     }
                 }
@@ -103,7 +103,7 @@ namespace ShareddData
                 try
                 {
                     conn.Open();
-                    string query = "UPDATE TaiKhoan SET userName=@username, email=@email, phoneNumber=@phoneNumber WHERE Id=@id";
+                    string query = "UPDATE TaiKhoan SET userName=@username, email=@email, phone=@phoneNumber WHERE ID=@id";
                     SqlCommand cmd = new SqlCommand(query, conn);
                     cmd.Parameters.AddWithValue("@username", username);
                     cmd.Parameters.AddWithValue("@email", email);

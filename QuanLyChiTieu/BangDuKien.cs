@@ -259,8 +259,15 @@ namespace QuanLyChiTieu
                 ngayTao = dateTimePickerNgayTao.Value.ToString("dd/MM/yyyy");
                 string thang = ngayTao.Split('/')[1];
                 string nam = ngayTao.Split('/')[2];
-
-                if(thang != comboBoxMonth.Text || nam != txtNam.Text)
+                Console.WriteLine(thang);
+                Console.WriteLine(nam);
+                Console.WriteLine(comboBoxMonth.Text);
+                string comboBoxMonthText = comboBoxMonth.Text.ToString().Split(' ')[1];
+                if(int.Parse(comboBoxMonth.Text.ToString().Split(' ')[1]) < 10)
+                {
+                    comboBoxMonthText = "0" + comboBoxMonth.Text.ToString().Split(' ')[1];
+                }
+                if(thang != comboBoxMonthText || nam != txtNam.Text)
                 {
                     MessageBox.Show("Ngày tạo phải nằm trong tháng và năm của bộ lọc");
                     return;
