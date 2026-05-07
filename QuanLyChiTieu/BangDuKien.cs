@@ -55,23 +55,34 @@ namespace QuanLyChiTieu
 
         private void btnThem_Click(object sender, EventArgs e)
         {
-            string loaiChiTieu = comboBoxLoaiGiaoDich.SelectedItem.ToString();
+            string loaiChiTieu = "";
+            int loi = 0;
+
+            if (comboBoxLoaiGiaoDich.SelectedItem == null) 
+            {
+                lblLoaiGiaoDichError.Text = "Vui lòng chọn loại giao dịch.";
+                lblLoaiGiaoDichError.Visible = true;
+                loi += 1;
+
+            }else loaiChiTieu = comboBoxLoaiGiaoDich.SelectedItem.ToString();
             string tenDanhMuc = txtTenDanhMuc.Text;
             decimal soTien = txtTienDuKien.Text != "" ? decimal.Parse(txtTienDuKien.Text) : 0;
             string ngayTao = dateTimePickerNgayTao.Value.ToString("dd/MM/yyyy");
 
-            if (loaiChiTieu == "")
-            {
-                lblLoaiGiaoDichError.Text = "Vui lòng chọn loại giao dịch.";
-            }
+            
             if (tenDanhMuc == "")
             {
                 lblTenDanhMucError.Text = "Vui lòng nhập tên danh mục.";
+                lblTenDanhMucError.Visible = true;
+                loi += 1;
             }
             if (soTien <= 0)
             {
-                lblSoTienDuKienError.Text = "Vui lòng nhập số tiền dự kiến lớn hơn 0.";
+                lblSoTienDuKienError.Text = "Vui lòng nhập số tiền dự kiến lớn \nhơn 0.";
+                lblSoTienDuKienError.Visible = true;
+                loi += 1;
             }
+            if (loi > 0) return;
 
             string thang = ngayTao.Split('/')[1];
             string nam = ngayTao.Split('/')[2];
@@ -89,7 +100,6 @@ namespace QuanLyChiTieu
             {
                 MessageBox.Show("Lỗi khi kiểm tra bảng dự kiến: " + ex.Message);
                 return;
-
             }
 
             try
@@ -286,6 +296,21 @@ namespace QuanLyChiTieu
             {
                 MessageBox.Show(ex.Message);
             }
+        }
+
+        private void comboBoxLoaiGiaoDich_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            lblLoaiGiaoDichError.Visible = false;
+        }
+
+        private void txtTenDanhMuc_TextChanged(object sender, EventArgs e)
+        {
+            lblTenDanhMucError.Visible = false;
+        }
+
+        private void txtTienDuKien_TextChanged(object sender, EventArgs e)
+        {
+            lblTenDanhMucError.Visible = false;
         }
     }
     

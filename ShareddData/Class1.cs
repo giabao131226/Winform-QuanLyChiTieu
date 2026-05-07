@@ -441,15 +441,21 @@ namespace ShareddData
                     FROM TaiKhoan as tk, GiaoDich as gd, DanhMuc as dm
                     WHERE tk.ID = @userID 
                     AND gd.IDDanhMuc = dm.ID 
-                    AND tk.ID = gd.IDTaiKhoan 
-                    AND MONTH(gd.NgayGiaoDich) = @thang 
-                    AND YEAR(gd.NgayGiaoDich) = @nam";
+                    AND tk.ID = gd.IDTaiKhoan";
                     SqlCommand cmd = new SqlCommand(query, conn);
-                    cmd.Parameters.AddWithValue("@thang", int.Parse(thang));
-                    cmd.Parameters.AddWithValue("@nam", int.Parse(nam));
                     cmd.Parameters.AddWithValue("@userID", AppSession.UserId);
                     
-                    if(loai != "Tất cả" && loai!="")
+                    if(thang != "")
+                    {
+                        cmd.CommandText += " AND MONTH(gd.NgayGiaoDich) = @thang";
+                        cmd.Parameters.AddWithValue("@thang", int.Parse(thang));
+                    }
+                    if(nam != "")
+                    {
+                        cmd.CommandText += " AND YEAR(gd.NgayGiaoDich) = @nam";
+                        cmd.Parameters.AddWithValue("@nam", int.Parse(nam));
+                    }
+                    if (loai != "Tất cả" && loai!="")
                     {
                         cmd.CommandText += " AND gd.Loai = @loai";
                         cmd.Parameters.AddWithValue("@loai", loai);
@@ -459,9 +465,7 @@ namespace ShareddData
                         cmd.CommandText += " AND gd.TenGiaoDich LIKE @textSearch";
                         cmd.Parameters.AddWithValue("@textSearch", "%" + textSearch + "%");
                     }
-                    Console.WriteLine(cmd.CommandText);
-                    Console.WriteLine(thang);
-                    Console.WriteLine(nam);
+                    
                     SqlDataReader reader = cmd.ExecuteReader();
                     List<Transition> transitions = new List<Transition>();
                     while (reader.Read())
@@ -483,7 +487,7 @@ namespace ShareddData
                         };
                         transitions.Add(transition);
                     }
-                    
+                    Console.WriteLine("Số bản ghi: " + transitions.Count());
                     return transitions;
                 }
                 catch (Exception ex)
@@ -504,7 +508,9 @@ namespace ShareddData
                 try
                 {
                     conn.Open();
-                    string query = "INSERT INTO GiaoDich (tenGiaoDich, NgayGiaoDich, soTien, Loai, IDTaiKhoan, IDDanhMuc) VALUES (@tenGiaoDich, @ngayTao, @soTien, @loai, @userID, (SELECT ID FROM DanhMuc WHERE tenDanhMuc = @tenDanhMuc));";
+                    string thang = ngayTao.ToString().Split('/')[1];
+                    string nam = ngayTao.ToString().Split('/')[2];
+                    string query = "INSERT INTO GiaoDich (tenGiaoDich, NgayGiaoDich, soTien, Loai, IDTaiKhoan, IDDanhMuc) VALUES (@tenGiaoDich, @ngayTao, @soTien, @loai, @userID, (SELECT TOP 1 ID FROM DanhMuc WHERE tenDanhMuc = @tenDanhMuc AND MONTH(NgayTao) = @thang AND YEAR(NgayTao) = @nam));";
                     SqlCommand cmd = new SqlCommand(query, conn);
                     cmd.Parameters.AddWithValue("@tenGiaoDich", tenGiaoDich);
                     cmd.Parameters.AddWithValue("@loai", loai);
@@ -512,6 +518,8 @@ namespace ShareddData
                     cmd.Parameters.AddWithValue("@ngayTao", DateTime.ParseExact(ngayTao, "dd/MM/yyyy", null));
                     cmd.Parameters.AddWithValue("@userID", AppSession.UserId);
                     cmd.Parameters.AddWithValue("@tenDanhMuc", tenDanhMuc);
+                    cmd.Parameters.AddWithValue("@thang", thang);
+                    cmd.Parameters.AddWithValue("@nam", nam);
                     int row = cmd.ExecuteNonQuery();
                     if (row > 0)
                     {

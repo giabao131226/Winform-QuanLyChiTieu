@@ -305,6 +305,7 @@
             this.label1.TabIndex = 19;
             this.label1.Text = "Quản Lý Chi Tiêu";
             this.label1.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // panel2
             // 
@@ -609,6 +610,7 @@
             this.dateTimePickerNgayGiaoDich.Name = "dateTimePickerNgayGiaoDich";
             this.dateTimePickerNgayGiaoDich.Size = new System.Drawing.Size(244, 22);
             this.dateTimePickerNgayGiaoDich.TabIndex = 9;
+            this.dateTimePickerNgayGiaoDich.ValueChanged += new System.EventHandler(this.dateTimePickerNgayGiaoDich_ValueChanged);
             // 
             // label10
             // 

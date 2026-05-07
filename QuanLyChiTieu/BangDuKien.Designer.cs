@@ -70,6 +70,8 @@
             this.columnHeader7 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderID = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeaderLoai = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeaderNgayTao = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.lblChenhLech = new System.Windows.Forms.Label();
             this.lblTongThucChi = new System.Windows.Forms.Label();
             this.lblTongDuKien = new System.Windows.Forms.Label();
@@ -77,8 +79,6 @@
             this.lblTieuDeBangDuKien = new System.Windows.Forms.Label();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.columnHeaderLoai = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeaderNgayTao = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -402,6 +402,7 @@
             this.comboBoxLoaiGiaoDich.Size = new System.Drawing.Size(215, 24);
             this.comboBoxLoaiGiaoDich.TabIndex = 24;
             this.comboBoxLoaiGiaoDich.Text = "Loại Giao Dịch";
+            this.comboBoxLoaiGiaoDich.SelectedIndexChanged += new System.EventHandler(this.comboBoxLoaiGiaoDich_SelectedIndexChanged);
             // 
             // lblLoai
             // 
@@ -443,6 +444,7 @@
             this.txtTienDuKien.Name = "txtTienDuKien";
             this.txtTienDuKien.Size = new System.Drawing.Size(215, 22);
             this.txtTienDuKien.TabIndex = 4;
+            this.txtTienDuKien.TextChanged += new System.EventHandler(this.txtTienDuKien_TextChanged);
             // 
             // label8
             // 
@@ -482,6 +484,7 @@
             this.txtTenDanhMuc.Name = "txtTenDanhMuc";
             this.txtTenDanhMuc.Size = new System.Drawing.Size(215, 22);
             this.txtTenDanhMuc.TabIndex = 0;
+            this.txtTenDanhMuc.TextChanged += new System.EventHandler(this.txtTenDanhMuc_TextChanged);
             // 
             // splitContainer3
             // 
@@ -551,6 +554,14 @@
             // 
             this.columnHeaderID.Text = "ID";
             this.columnHeaderID.Width = 0;
+            // 
+            // columnHeaderLoai
+            // 
+            this.columnHeaderLoai.Width = 0;
+            // 
+            // columnHeaderNgayTao
+            // 
+            this.columnHeaderNgayTao.Width = 0;
             // 
             // lblChenhLech
             // 
@@ -632,14 +643,6 @@
             this.label6.TabIndex = 31;
             this.label6.Text = "Ghi chú: ";
             this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // columnHeaderLoai
-            // 
-            this.columnHeaderLoai.Width = 0;
-            // 
-            // columnHeaderNgayTao
-            // 
-            this.columnHeaderNgayTao.Width = 0;
             // 
             // BangDuKien
             // 
